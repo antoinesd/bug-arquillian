@@ -1,9 +1,14 @@
 package org.jboss.bug;
 
 
+import java.io.FileNotFoundException;
+
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -11,10 +16,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.io.FileNotFoundException;
 
 @RunWith(Arquillian.class)
 public class HelloWorldTest {
@@ -37,10 +38,10 @@ public class HelloWorldTest {
     @Deployment
     public static Archive<?> createTestArchive() throws FileNotFoundException {
 
-        File[] libs = Maven.resolver()
+        GenericArchive[] libs = Maven.resolver()
                 .loadPomFromFile("pom.xml")
                 .resolve("org.apache.deltaspike.core:deltaspike-core-impl")
-                .withTransitivity().asFile();
+                .withTransitivity().as(GenericArchive.class);
 
         WebArchive ret = ShrinkWrap
                 .create(WebArchive.class, "test.war")
